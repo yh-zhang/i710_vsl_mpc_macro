@@ -15,6 +15,11 @@ def compute_control(nmpc, t):
             nmpc.sim.v[:,[t]] = nmpc.sim.u[:,[t]] + nmpc.pre.v_e
             round_and_rate_limit_control(nmpc, t)
 
+        elif nmpc.pre.ctrl == 'TFL':
+            compute_control_TFL(nmpc, t)
+            nmpc.sim.v[:,[t]] = nmpc.sim.u[:,[t]] + nmpc.pre.v_e
+            round_and_rate_limit_control(nmpc, t)
+
         elif nmpc.pre.ctrl == 'NMPC':
             compute_control_NMPC(nmpc, t)
             nmpc.sim.v[:,[t]] = nmpc.sim.u[:,[t]] + nmpc.pre.v_e
@@ -30,6 +35,41 @@ def compute_control(nmpc, t):
     #         compute_control_NMPC(nmpc, t)
     #         nmpc.sim.v[:,[t]] = nmpc.sim.u[:,[t]] + nmpc.pre.v_e
     #         round_and_rate_limit_control(nmpc, t)
+
+def compute_control_TFL(nmpc, t):
+    rrho = nmpc.sim.rho[:-1, [t]]
+    #print rrho.shape
+    e = nmpc.sim.x[:-1, [t]]
+    x = np.zeros(rrho.shape)
+    D = np.zeros(rrho.shape)
+    u = np.zeros((nmpc.pre.n_u, 1))
+    # compute D 
+    for i in xrange(rrho.shape[0]):
+        for j in xrange(i, rrho.shape[0]):
+            D[i] += nmpc.pre.L[j]
+            x[i] += nmpc.pre.L[j] * e[j]
+    # compute x = phi - phi_e
+    x /= D
+
+    # compute the switching term
+    if x[-1] <= 0:
+        beta = nmpc.pre.ve * x[-1]
+    else:
+        beta = - nmpc.pre.wb * x[-1]
+
+    # compute u
+    for i in range(nmpc.pre.n_u-1):
+        u[i] = (-nmpc.pre.lambda_TFL[i] * D[i+1] * x[i+1] \
+            + D[i+1]  / nmpc.pre.L[i] * nmpc.pre.v_e[i] * x[i+1] \
+            - D[i] / nmpc.pre.L[i] * nmpc.pre.v_e[i] * x[i]) / rrho[i]
+    N = nmpc.pre.n - 1
+    u[N-1] = (- nmpc.pre.lambda_TFL[N-1] * D[N] * x[N] \
+             + D[N] / nmpc.pre.L[N-1] * nmpc.pre.v_e[N-1] * x[N] \
+             - D[N-1] / nmpc.pre.L[N-1] * nmpc.pre.v_e[N-1] * x[N-1] \
+             + beta) / rrho[N-1]
+
+    nmpc.sim.u[:,[t]] = u
+    
 
 def compute_control_FL(nmpc, t):
     #print nmpc.sim.rho
@@ -49,7 +89,7 @@ def compute_control_FL(nmpc, t):
     else:
         u[N-1] = 1 / rrho[N-1] * (-nmpc.pre.lambda_FL[N-1] * nmpc.pre.L[N] * e[N] - nmpc.pre.v_e[N-1] * e[N-1] - nmpc.pre.wb * e[N])
 
-    nmpc.sim.u[:,[t]] = u;
+    nmpc.sim.u[:,[t]] = u
 
 
 def compute_control_NMPC(nmpc, t):

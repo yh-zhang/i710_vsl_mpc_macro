@@ -129,6 +129,9 @@ def build_controller_parameters(nmpc):
         nmpc.pre.lambda_FL = 50 * np.ones((nmpc.pre.n_u, 1))
         return
 
+    if nmpc.pre.ctrl == 'TFL':
+        nmpc.pre.lambda_TFL = 50 * np.ones((nmpc.pre.n_u, 1))
+
     if nmpc.pre.ctrl == 'NMPC':
               
         # Prediction horizon (in number of control steps)

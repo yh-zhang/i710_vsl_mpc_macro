@@ -5,9 +5,10 @@ def build_configuration(nmpc):
 	nmpc.pre.obj = 'quadratic'
 	#nmpc.pre.obj = 'economic'
 
-	# The control method applied ('NMPC', 'None')
+	# The control method applied ('NMPC', 'FL', 'TFL', 'None')
 	#nmpc.pre.ctrl = 'FL'
-	nmpc.pre.ctrl = 'NMPC'
+	#nmpc.pre.ctrl = 'NMPC'
+	nmpc.pre.ctrl = 'TFL'
 
 	# Choose the simulation integrator
 	# nmpc.sim.int = 'RK4'
