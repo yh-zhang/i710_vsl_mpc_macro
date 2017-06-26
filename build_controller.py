@@ -46,11 +46,24 @@ def formulate_NLP(nmpc):
             nmpc.ctrl.lbw = vertcat(nmpc.ctrl.lbw, nmpc.pre.u_min)
             nmpc.ctrl.ubw = vertcat(nmpc.ctrl.ubw, nmpc.pre.u_max)
 
+            # Define rate limits in space
+            for i in xrange(int(nmpc.pre.n_u)-1):
+                
+                g = vertcat(g, uk[i+1] - uk[i])
+                
+                nmpc.ctrl.lbg = vertcat(nmpc.ctrl.lbg, -nmpc.pre.v_pRL_space);
+                
+                nmpc.ctrl.ubg = vertcat(nmpc.ctrl.ubg, np.inf)
+
+            # Define rate limits in time
             if k == 0:
+                
                 g = vertcat(g, uk - u_prev)
 
                 nmpc.ctrl.lbg = vertcat(nmpc.ctrl.lbg, -nmpc.pre.v_pRL*np.ones((nmpc.pre.n_u, 1)));
-                nmpc.ctrl.ubg = vertcat(nmpc.ctrl.ubg, nmpc.pre.v_pRL*np.ones((nmpc.pre.n_u, 1)))
+                
+                nmpc.ctrl.ubg = vertcat(nmpc.ctrl.ubg, np.inf*np.ones((nmpc.pre.n_u, 1)))
+                
                 #print nmpc.ctrl.lbg
 
         # Integrate with Runge Kutta
