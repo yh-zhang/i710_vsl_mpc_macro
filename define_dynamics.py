@@ -15,7 +15,7 @@ def define_dynamics(nmpc):
 
         # System dynamics
         q = compute_flow_rate(nmpc, x, u)
-        for i in xrange(nmpc.pre.n_x-1):
+        for i in range(nmpc.pre.n_x-1):
             x_dot[i] = (q[i] - q[i+1]) / nmpc.pre.L[i]
         x_dot[-1] = nmpc.pre.d - q[0] 
         # The system states are error states of [rho0, rho1, ..., rho10, queue]'
@@ -97,7 +97,7 @@ def compute_flow_rate(nmpc, x, u):
     q[0] = fmax(fmin(fmin(nmpc.pre.d, nmpc.pre.c[0]), 
         nmpc.pre.w[0] * (nmpc.pre.rho_j[0] - x[0] - nmpc.pre.rho_e[0])), 0)
 
-    for i in xrange(1, nmpc.pre.n):
+    for i in range(1, nmpc.pre.n):
         q[i] = fmax(fmin(fmin((u[i-1] + nmpc.pre.v_e[i-1]) * (x[i-1] + nmpc.pre.rho_e[i-1]), nmpc.pre.c[i]),
          nmpc.pre.w[i] * (nmpc.pre.rho_j[i] - x[i] - nmpc.pre.rho_e[i]) ), 0)
 

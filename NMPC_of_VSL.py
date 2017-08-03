@@ -1,4 +1,6 @@
 # import nmpc_classes as nc
+# from sys import path
+# path.append(r'C:\Users\Yihang\Documents\Python Scripts\casadi-py36-np1.9.1-v3.2.0-64bit')
 import pickle as pkl
 from build_parameters import *
 from build_configuration import *
@@ -48,12 +50,13 @@ def NMPC_of_VSL(nmpc):
     define_dynamics(nmpc)
     initialize_simulation(nmpc)
     build_controller(nmpc)
+    print(nmpc.pre.ctrl)
     # print nmpc.sim.x[1:, 0]
 
     # Conduct simulation
     
-    for t in xrange(int(nmpc.pre.N_exp-1)):
-      print t
+    for t in range(int(nmpc.pre.N_exp-1)):
+      print(t)
       compute_control(nmpc, t)
       evolve_dynamics(nmpc, t)
 

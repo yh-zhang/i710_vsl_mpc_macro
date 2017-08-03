@@ -7,8 +7,8 @@ def build_configuration(nmpc):
 
 	# The control method applied ('NMPC', 'FL', 'TFL', 'None')
 	#nmpc.pre.ctrl = 'FL'
-	#nmpc.pre.ctrl = 'NMPC'
-	nmpc.pre.ctrl = 'TFL'
+	nmpc.pre.ctrl = 'NMPC'
+	#nmpc.pre.ctrl = 'TFL'
 
 	# Choose the simulation integrator
 	# nmpc.sim.int = 'RK4'

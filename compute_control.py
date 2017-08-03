@@ -124,12 +124,12 @@ def initialize_NMPC(nmpc, t):
     # Check initial guess feasibility
     lbCheck = (nmpc.ctrl.w0_IG < nmpc.ctrl.lbw)
     #lbCheck[0] = 1
-    for i in xrange(lbCheck.shape[0]):
+    for i in range(lbCheck.shape[0]):
         if lbCheck[i]:
             raise ValueError('Lower bound violated!')
 
     ubCheck = (nmpc.ctrl.w0_IG > nmpc.ctrl.ubw)
-    for i in xrange(ubCheck.shape[0]):
+    for i in range(ubCheck.shape[0]):
         if ubCheck[i]:
             raise ValueError('Upper bound violated!')
 
@@ -168,7 +168,7 @@ def recover_control_NMPC(nmpc, t):
     u_full = np.zeros((nmpc.pre.n_u, int(nmpc.pre.N_p)))
     x_full = np.zeros((nmpc.pre.n_x, int(nmpc.pre.N_p)))
 
-    for k in xrange(int(nmpc.pre.N_p)):
+    for k in range(int(nmpc.pre.N_p)):
         u_full[:, [k]] = w_star_full_reshaped[:nmpc.pre.n_u, [k]]
         x_full[:, [k]] = w_star_full_reshaped[nmpc.pre.n_u:, [k]]
 

@@ -26,6 +26,9 @@ def build_parameters(nmpc):
     # Rate limiting parameter on VSL commands (mi/h)
     nmpc.pre.v_pRL = 10
     
+    # Rate limiting (in space) parameter on VSL commands (mi/h)
+    nmpc.pre.v_pRL_space = 10
+    
     build_time_parameters(nmpc)
     
     build_model_parameters(nmpc)

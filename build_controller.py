@@ -34,7 +34,7 @@ def formulate_NLP(nmpc):
     #print v.shape
 
     # For loop over control intervals
-    for k in xrange(int(nmpc.pre.N_p)):
+    for k in range(int(nmpc.pre.N_p)):
         if k < nmpc.pre.N_c:
             # New NLP variable for control inputs
             uk = MX.sym('uk_'+ str(k), nmpc.pre.n_u, 1)
@@ -45,9 +45,9 @@ def formulate_NLP(nmpc):
             # Define constraints on control inputs
             nmpc.ctrl.lbw = vertcat(nmpc.ctrl.lbw, nmpc.pre.u_min)
             nmpc.ctrl.ubw = vertcat(nmpc.ctrl.ubw, nmpc.pre.u_max)
-
-            # Define rate limits in space
-            for i in xrange(int(nmpc.pre.n_u)-1):
+            
+            ## Define rate limits in space
+            for i in range(int(nmpc.pre.n_u)-1):
                 
                 g = vertcat(g, uk[i+1] - uk[i])
                 
@@ -65,7 +65,7 @@ def formulate_NLP(nmpc):
                 nmpc.ctrl.ubg = vertcat(nmpc.ctrl.ubg, np.inf*np.ones((nmpc.pre.n_u, 1)))
                 
                 #print nmpc.ctrl.lbg
-
+                
         # Integrate with Runge Kutta
         xk_end, Jk = nmpc.ctrl.F_pre(xk, uk)
 
@@ -120,11 +120,11 @@ def formulate_NLP(nmpc):
 
 def create_initial_guess(nmpc):
 	nmpc.ctrl.w0_IG_0 = []
-	for k in xrange(int(nmpc.pre.N_c)):
+	for k in range(int(nmpc.pre.N_c)):
 		nmpc.ctrl.w0_IG_0 = vertcat(nmpc.ctrl.w0_IG_0, nmpc.pre.uk_IG_0)
 		nmpc.ctrl.w0_IG_0 = vertcat(nmpc.ctrl.w0_IG_0, nmpc.pre.xk_IG_0)
 
-	for k in xrange(int(nmpc.pre.N_c), int(nmpc.pre.N_p)):
+	for k in range(int(nmpc.pre.N_c), int(nmpc.pre.N_p)):
 		nmpc.ctrl.w0_IG_0 = vertcat(nmpc.ctrl.w0_IG_0, nmpc.pre.xk_IG_0)
 
 
